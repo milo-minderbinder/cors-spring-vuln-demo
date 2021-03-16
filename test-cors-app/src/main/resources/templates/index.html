@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>CORS Vuln Demo</title>
+</head>
+
+<body>
+<div id="content-pane"></div>
+<script>
+    function display(reqUrl) {
+        let request = new XMLHttpRequest();
+        request.open('GET', reqUrl, true);
+        request.withCredentials = true;
+        request.setRequestHeader('Content-Type', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,"():<>?@[\\]{},*/*;q=0.8');
+        // request.setRequestHeader('X-Forwarded-Proto', 'http');
+        // request.setRequestHeader('X-Forwarded-Host', 'foo.com');
+        // request.setRequestHeader('X-Forwarded-Port', '8080');
+        request.onload = function () {
+            let respHeaders = request.getAllResponseHeaders();
+            console.log(respHeaders);
+            console.log(this.responseText);
+            let data = JSON.parse(this.responseText);
+
+            let divElement = document.createElement('div');
+
+            let titleElement = document.createElement('h4');
+            titleElement.innerText = 'cross-origin request URL: ' + reqUrl;
+
+            let headersContent = document.createElement('div')
+            for (const [key, value] of Object.entries(data)) {
+                let headerName = document.createElement('b')
+                headerName.innerText = key;
+                headersContent.appendChild(headerName);
+                headersContent.appendChild(document.createTextNode(': ' + value));
+                headersContent.appendChild(document.createElement('br'));
+            }
+
+            let cookiesTitle = document.createElement('b');
+            cookiesTitle.innerText = 'cookies:';
+            let cookiesContent = document.createElement('div')
+            for (const cookie of data.cookie.split(/;\s*/)) {
+                const key = cookie.substring(0, cookie.indexOf('='));
+                const value = cookie.substring(cookie.indexOf('=') + 1)
+                let cookieName = document.createElement('b')
+                cookieName.innerText = key;
+                cookiesContent.appendChild(cookieName);
+                cookiesContent.appendChild(document.createTextNode(': ' + value));
+                cookiesContent.appendChild(document.createElement('br'));
+            }
+
+            divElement.appendChild(titleElement);
+            divElement.appendChild(headersContent);
+            divElement.appendChild(document.createElement('br'));
+            divElement.appendChild(cookiesTitle);
+            divElement.appendChild(cookiesContent);
+
+            let contentPane = document.getElementById('content-pane');
+            let hrElement = document.createElement('hr');
+            contentPane.appendChild(hrElement);
+            contentPane.appendChild(divElement);
+        };
+        request.send();
+    }
+
+    display('https://localhost:8081/cors-java-config');
+    display('https://127.0.0.1:8081/cors-annotation-config');
+    display('https://localhost:8082/cors-spring-security-config');
+</script>
+</body>
+</html>

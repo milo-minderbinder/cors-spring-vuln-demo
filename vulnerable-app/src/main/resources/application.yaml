@@ -1,2 +1,9 @@
 server:
   port: 8081
+  ssl:
+    enabled: true
+    protocol: TLSv1.2
+    trust-store: /path/to/trust-store.jks
+    trust-store-password: changeit
+    key-store: /path/to/key-store.pkcs12
+    key-store-password: changeit
