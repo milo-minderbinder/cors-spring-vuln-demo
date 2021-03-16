@@ -19,6 +19,8 @@
         // request.setRequestHeader('X-Forwarded-Host', 'foo.com');
         // request.setRequestHeader('X-Forwarded-Port', '8080');
         request.onload = function () {
+            let respHeaders = request.getAllResponseHeaders();
+            console.log(respHeaders);
             console.log(this.responseText);
             let data = JSON.parse(this.responseText);
 

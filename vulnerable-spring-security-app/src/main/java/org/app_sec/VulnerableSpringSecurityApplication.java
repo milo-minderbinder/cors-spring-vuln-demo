@@ -35,7 +35,7 @@ public class VulnerableSpringSecurityApplication {
         }
 
         @Bean
-        CorsConfigurationSource corsConfigurationSource() {
+        public CorsConfigurationSource corsConfigurationSource() {
             CorsConfiguration configuration = new CorsConfiguration();
             configuration.applyPermitDefaultValues();
             //configuration.setAllowedOrigins(Arrays.asList(

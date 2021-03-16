@@ -19,6 +19,11 @@ public class CORSVulnDemoApplication {
         return "index";
     }
 
+    @RequestMapping("/sandbox")
+    public String sandbox() {
+        return "sandbox";
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(CORSVulnDemoApplication.class, args);
     }
